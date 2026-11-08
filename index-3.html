@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#e8f1df">
+<title>오늘도, 조금 더 편안하게</title>
+<style>
+:root{--bg:#edf3e7;--card:#fffefa;--ink:#344b3b;--muted:#7b8d7d;--green:#6f956f;--pale:#f2f6ed;--line:#e4ebdf}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif}
+main{width:min(100% - 28px,680px);margin:22px auto 40px}.hero{padding:24px;border-radius:24px;background:linear-gradient(135deg,#dcebd3,#f4f5df);margin-bottom:16px}
+.kicker{font-size:11px;letter-spacing:.14em;color:#668268;font-weight:700}.hero h1{font-size:clamp(25px,6vw,34px);line-height:1.25;margin:13px 0 8px}.hero p{margin:0;color:#657d65;font-size:14px}.date{margin-top:22px;font-size:12px;color:#71866e}
+.progress{height:8px;background:#ffffffa8;border-radius:99px;overflow:hidden;margin-top:9px}.progress>i{display:block;height:100%;width:0;background:#709a70;border-radius:99px;transition:width .2s}
+.section-title{font-size:17px;font-weight:750;margin:20px 3px 10px}.card{background:var(--card);border:1px solid var(--line);border-radius:19px;padding:17px;margin:11px 0;box-shadow:0 4px 14px #405a3510}
+.head{display:flex;align-items:center;justify-content:space-between;gap:12px}.heading{display:flex;align-items:center;gap:10px}.emoji{font-size:25px}.heading strong{display:block;font-size:15px}.sub{font-size:12px;color:var(--muted);margin-top:3px}.tag{font-size:11px;color:#68846a;background:#edf4e8;border-radius:99px;padding:5px 9px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:14px}.stat{background:var(--pale);border-radius:13px;padding:11px}.stat small{color:var(--muted)}.stat b{display:block;font-size:20px;margin-top:4px}
+label{font-size:12px;color:var(--muted)}input,select,textarea{font:inherit;color:var(--ink)}.field{width:100%;min-width:0;background:#f5f8f1;border:1px solid #e2eadc;border-radius:11px;padding:11px;margin-top:6px;outline:none}.field:focus{border-color:#8eaf89}
+.row{display:flex;gap:8px;margin-top:10px}.row>*{flex:1;min-width:0}.btn{border:0;border-radius:12px;background:var(--green);color:white;padding:11px 15px;font-weight:700;cursor:pointer}.btn.full{width:100%;margin-top:10px}.soft{background:#edf4e9;color:#507653}.drink{display:flex;justify-content:space-between;align-items:center;background:var(--pale);padding:9px 11px;border-radius:10px;margin-top:7px;font-size:13px}
+.note{background:#f3f7ef;border-radius:12px;padding:11px;color:#71836c;font-size:12px;line-height:1.6;margin-top:12px}
+.checkline{display:flex;align-items:center;gap:9px;color:var(--ink);font-size:13px;margin-top:13px}.checkline input{accent-color:var(--green);width:17px;height:17px}
+textarea{min-height:120px;resize:vertical}.moods{display:flex;flex-wrap:wrap;gap:7px;margin:9px 0 15px}.mood{border:0;border-radius:99px;background:#edf4e9;color:#507653;padding:8px 11px;font-size:12px;cursor:pointer}.mood[aria-pressed=true]{outline:2px solid #83a982;background:#dcebd5}
+.footer{text-align:center;padding:18px 5px;color:var(--muted);font-size:12px;line-height:1.7}
+@media(min-width:600px){main{margin-top:34px}.card{padding:20px}}
+</style>
+</head>
+<body><main>
+<header class="hero">
+ <div class="kicker">MY DAILY WELLNESS · 🌿</div>
+ <h1>오늘도,<br>조금 더 편안하게</h1>
+ <p>나를 돌보는 작은 습관, 편안한 하루의 시작.</p>
+ <div class="date" id="today"></div>
+ <div class="progress"><i id="bar"></i></div>
+ <div class="sub" id="progressText" style="margin-top:7px">오늘의 습관 0 / 3 완료</div>
+</header>
+<div class="section-title">오늘의 관리</div>
+<section class="card">
+ <div class="head"><div class="heading"><span class="emoji">☕</span><div><strong>카페인 줄이기</strong><div class="sub">오늘 마신 음료를 기록해요</div></div></div><span class="tag">01</span></div>
+ <div class="stats"><div class="stat"><small>오늘 마신 음료</small><b id="drinkCount">0잔</b></div><div class="stat"><small>카페인 섭취량</small><b id="caffeineTotal">0mg</b></div></div>
+ <div class="row"><select class="field" id="drinkType" aria-label="음료 종류"><option value="95">아메리카노 · 약 95mg</option><option value="35">콜라 · 약 35mg</option><option value="30">녹차 · 약 30mg</option><option value="45">홍차 · 약 45mg</option><option value="5">디카페인 · 약 5mg</option><option value="0">기타 음료</option></select></div>
+ <div class="row"><input class="field" id="drinkName" placeholder="음료 이름 (선택)"><input class="field" id="drinkMg" type="number" min="0" max="1000" placeholder="카페인 mg"></div>
+ <button class="btn full" id="addDrink">+ 음료 기록하기</button><div id="drinkList" aria-live="polite"></div>
+ <div class="note">💡 실제 카페인 함량은 용량과 제조 방식에 따라 달라요. 청소년은 카페인 섭취를 피하거나 줄이는 것이 좋아요.</div>
+</section>
+<section class="card">
+ <div class="head"><div class="heading"><span class="emoji">🌙</span><div><strong>규칙적인 수면 습관</strong><div class="sub">일정한 시간에 자고 일어나기</div></div></div><span class="tag">02</span></div>
+ <div class="row"><label>🌛 취침 목표 시간<input class="field" type="time" id="bedtime" value="22:30"></label><label>☀️ 기상 목표 시간<input class="field" type="time" id="waketime" value="07:00"></label></div>
+ <div class="stat" style="margin-top:12px"><small>예정 수면 시간</small><b id="duration">8시간 30분</b></div>
+ <label class="checkline"><input type="checkbox" id="sleepCheck"> 오늘 목표 시간에 잠자리에 들기</label>
+ <label class="checkline"><input type="checkbox" id="wakeCheck"> 내일 목표 시간에 일어나기</label>
+ <div class="note">🌿 청소년은 일반적으로 하루 8~10시간의 수면이 권장돼요.</div>
+</section>
+<section class="card">
+ <div class="head"><div class="heading"><span class="emoji">📔</span><div><strong>마음 비우기 일기</strong><div class="sub">자기 전 생각을 정리하는 시간</div></div></div><span class="tag">03</span></div>
+ <p style="font-size:13px;font-weight:650;margin:17px 0 8px">오늘의 감정은?</p>
+ <div class="moods" id="moods"><button class="mood" data-mood="😊 행복해요" aria-pressed="false">😊 행복해요</button><button class="mood" data-mood="😌 평온해요" aria-pressed="false">😌 평온해요</button><button class="mood" data-mood="😔 우울해요" aria-pressed="false">😔 우울해요</button><button class="mood" data-mood="😣 복잡해요" aria-pressed="false">😣 복잡해요</button><button class="mood" data-mood="😴 피곤해요" aria-pressed="false">😴 피곤해요</button></div>
+ <label>오늘 기억에 남는 일<textarea class="field" id="journal" placeholder="잘한 일도, 속상했던 일도 편하게 적어 봐요."></textarea></label>
+ <label style="display:block;margin-top:13px">내일의 나에게 한마디 💌<input class="field" id="tomorrow" placeholder="오늘도 수고했어. 내일은 조금 더 편안하길!"></label>
+ <button class="btn full" id="saveJournal">일기 저장하기</button><div class="sub" id="saveStatus" aria-live="polite" style="margin-top:8px">작성 내용은 이 기기에 저장돼요.</div>
+</section>
+<section class="card">
+ <div class="heading"><span class="emoji">✨</span><strong>오늘의 작은 약속</strong></div>
+ <label class="checkline"><input class="habit" type="checkbox"> 오후에는 카페인 음료 대신 물 마시기</label>
+ <label class="checkline"><input class="habit" type="checkbox"> 잠들기 전 스마트폰 내려놓기</label>
+ <label class="checkline"><input class="habit" type="checkbox"> 오늘의 감정을 일기에 기록하기</label>
+</section>
+
+<section class="card" id="historyCard">
+ <div class="head"><div class="heading"><span class="emoji">🗂️</span><div><strong>나의 기록 보관함</strong><div class="sub">날짜별로 저장된 기록을 다시 볼 수 있어요</div></div></div><span class="tag" id="historyCount">0일</span></div>
+ <label style="display:block;margin-top:14px">확인할 날짜<select class="field" id="historyDate"><option value="">저장된 기록이 없어요</option></select></label>
+ <div id="historyDetail" class="note" aria-live="polite">기록을 저장하면 이곳에서 날짜별로 다시 볼 수 있어요.</div>
+</section>
+\n<div class="footer">🌷 완벽하지 않아도 괜찮아요.<br>어제보다 조금 더 나를 돌보는 하루면 충분해요.<br><br>이 기기에서만 기록을 확인할 수 있어요.</div>
+</main>
+<script>
+(()=>{
+ const $=id=>document.getElementById(id), today=new Date(), key='today-comfortably-v1-history';
+ const dateKey=[today.getFullYear(),String(today.getMonth()+1).padStart(2,'0'),String(today.getDate()).padStart(2,'0')].join('-');
+ $('today').textContent=today.getFullYear()+'년 '+(today.getMonth()+1)+'월 '+today.getDate()+'일';
+ const blank=()=>({drinks:[],mood:'',journal:'',tomorrow:'',sleep:false,wake:false,habits:[false,false,false],bedtime:'22:30',waketime:'07:00'});
+ let history={};
+ try{
+   const saved=JSON.parse(localStorage.getItem(key)||'{}');
+   if(saved&&saved.days) history=saved.days;
+   // Migrate records from the first version if present.
+   const old=JSON.parse(localStorage.getItem('today-comfortably-v1')||'null');
+   if(old&&old.date&&!history[old.date]) { const {date,...rest}=old; history[date]=rest; }
+ }catch(e){history={};}
+ let state={...blank(),...(history[dateKey]||{})};
+ function persist(){
+   history[dateKey]={...state};
+   try{localStorage.setItem(key,JSON.stringify({days:history}));}
+   catch(e){$('saveStatus').textContent='저장 공간이 부족해요. 브라우저 저장 공간을 확인해 주세요.';}
+   renderHistory();
+ }
+ function progress(){let n=[state.sleep,state.wake,!!state.journal.trim()].filter(Boolean).length;$('bar').style.width=(n/3*100)+'%';$('progressText').textContent='오늘의 습관 '+n+' / 3 완료';}
+ function renderDrinks(){$('drinkCount').textContent=state.drinks.length+'잔';$('caffeineTotal').textContent=state.drinks.reduce((s,d)=>s+d.mg,0)+'mg';$('drinkList').replaceChildren();state.drinks.forEach((d,i)=>{let row=document.createElement('div');row.className='drink';let name=document.createElement('span');name.textContent=d.name+' · '+d.mg+'mg';let del=document.createElement('button');del.className='mood';del.textContent='삭제';del.onclick=()=>{state.drinks.splice(i,1);persist();renderDrinks()};row.append(name,del);$('drinkList').append(row)})}
+ function sleepDuration(){state.bedtime=$('bedtime').value;state.waketime=$('waketime').value;let [h,m]=state.bedtime.split(':').map(Number),[a,b]=$('waketime').value.split(':').map(Number);let mins=a*60+b-(h*60+m);if(mins<=0)mins+=1440;$('duration').textContent=Math.floor(mins/60)+'시간 '+mins%60+'분';persist()}
+ function renderHistory(){
+   const sel=$('historyDate'), dates=Object.keys(history).sort().reverse(), prior=sel.value;
+   $('historyCount').textContent=dates.length+'일';
+   sel.replaceChildren();
+   if(!dates.length){let o=document.createElement('option');o.value='';o.textContent='저장된 기록이 없어요';sel.append(o);$('historyDetail').textContent='기록을 저장하면 이곳에서 날짜별로 다시 볼 수 있어요.';return;}
+   dates.forEach(d=>{let o=document.createElement('option');o.value=d;o.textContent=d;sel.append(o)});
+   sel.value=dates.includes(prior)?prior:dates[0];
+   showHistory(sel.value);
+ }
+ function showHistory(d){
+   const x=history[d];if(!x)return;
+   const lines=[];
+   lines.push('☕ 음료: '+(x.drinks||[]).map(v=>v.name+' ('+v.mg+'mg)').join(', ' || '') );
+   lines.push('카페인 합계: '+(x.drinks||[]).reduce((s,v)=>s+v.mg,0)+'mg');
+   lines.push('🌙 수면 목표: '+(x.bedtime||'22:30')+' 취침 / '+(x.waketime||'07:00')+' 기상');
+   lines.push('수면 체크: '+(x.sleep?'완료':'미완료')+' · 기상 체크: '+(x.wake?'완료':'미완료'));
+   lines.push('💭 감정: '+(x.mood||'기록 없음'));
+   lines.push('📔 오늘의 일기: '+(x.journal||'기록 없음'));
+   lines.push('💌 내일의 나에게: '+(x.tomorrow||'기록 없음'));
+   lines.push('✨ 작은 약속: '+(x.habits||[]).filter(Boolean).length+' / 3개 완료');
+   $('historyDetail').textContent=lines.join('\\n');
+   $('historyDetail').style.whiteSpace='pre-line';
+ }
+ $('historyDate').onchange=e=>showHistory(e.target.value);
+ $('addDrink').onclick=()=>{let raw=$('drinkMg').value,mg=raw===''?Number($('drinkType').value):Number(raw);if(!Number.isFinite(mg)||mg<0||mg>1000){alert('카페인 함량을 0~1000mg 사이로 입력해 주세요.');return}let name=$('drinkName').value.trim()||$('drinkType').selectedOptions[0].text.split(' · ')[0];state.drinks.push({name,mg});$('drinkName').value='';$('drinkMg').value='';persist();renderDrinks()};
+ $('bedtime').value=state.bedtime;$('waketime').value=state.waketime;$('bedtime').onchange=sleepDuration;$('waketime').onchange=sleepDuration;
+ $('sleepCheck').checked=state.sleep;$('wakeCheck').checked=state.wake;
+ $('sleepCheck').onchange=e=>{state.sleep=e.target.checked;persist();progress()};$('wakeCheck').onchange=e=>{state.wake=e.target.checked;persist();progress()};
+ $('journal').value=state.journal;$('tomorrow').value=state.tomorrow;
+ $('moods').querySelectorAll('button').forEach(b=>{b.setAttribute('aria-pressed',String(state.mood===b.dataset.mood));b.onclick=()=>{state.mood=b.dataset.mood;$('moods').querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));persist()}});
+ $('saveJournal').onclick=()=>{state.journal=$('journal').value;state.tomorrow=$('tomorrow').value;persist();$('saveStatus').textContent='저장했어요. 오늘도 수고했어요 🌿';progress()};
+ document.querySelectorAll('.habit').forEach((el,i)=>{el.checked=!!state.habits[i];el.onchange=()=>{state.habits[i]=el.checked;persist()}});
+ // Save changes made during this visit, including the initially loaded day.
+ history[dateKey]={...state};
+ renderDrinks();sleepDuration();progress();renderHistory();
+})();
+</script>
+</body></html>
